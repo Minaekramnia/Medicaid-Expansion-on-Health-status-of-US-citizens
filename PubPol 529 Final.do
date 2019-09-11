@@ -1,10 +1,3 @@
-# Title     : Difference in Difference 
-# Objective : Model selection for MMN-Dataset
-# Created by: Mekramnia
-# Created on: 13/3/18
-
-##Preprocessing the data
-
 *Average Age
 bysort statefip year: egen avgage=mean(age)
 
