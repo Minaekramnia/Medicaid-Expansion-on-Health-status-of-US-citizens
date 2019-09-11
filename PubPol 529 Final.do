@@ -1,3 +1,8 @@
+# Title     : Difference in Difference on IPUMS Data 
+# Created by: Mekramnia
+# Created on: 13/3/18
+
+##Pre-processing the IPUMS Data
 *Average Age
 bysort statefip year: egen avgage=mean(age)
 
@@ -8,13 +13,6 @@ bysort statefip year: egen avgincome=median(offtotval)
 *Percent employed: 
 replace empstat=. if empstat==00
 replace empstat= 0 if empstat >12
-replace empstat = 1 if empstat==12
-replace empstat = 1 if empstat==10
-replace empstat = 1 if empstat==01
-replace empstat = 0 if empstat==21
-replace empstat = 0 if empstat==22
-replace empstat = 0 if empstat==32
-replace empstat = 0 if empstat==34
 replace empstat = 0 if empstat==36
 bysort statefip year: egen empstatst=mean(empstat)
 
@@ -32,15 +30,6 @@ bysort statefip year : egen racest=mean(race)
 
 *Percent w highschool/GED or higher
 replace educ99=. if educ99==00
-replace educ99=0 if educ99==01
-replace educ99=0 if educ99==04
-replace educ99=0 if educ99==05
-replace educ99=0 if educ99==06
-replace educ99=0 if educ99==07
-replace educ99=0 if educ99==08
-replace educ99=0 if educ99==09
-replace educ99=1 if educ99==10
-replace educ99=1 if educ99==11
 replace educ99=1 if educ99==12
 replace educ99=1 if educ99==13
 replace educ99=1 if educ99==14
@@ -56,10 +45,7 @@ bysort statefip year : egen healthst=mean(health)
 *Percent married by state by year
 replace marst=1 if marst==2
 replace marst=0 if marst==3
-replace marst=0 if marst==4
-replace marst=0 if marst==5
-replace marst=0 if marst==6
-replace marst=0 if marst==7
+
 replace marst=0 if marst==8
 replace marst=0 if marst==9
 bysort statefip year : egen marriedst=mean(marst)
@@ -87,6 +73,7 @@ replace privdep=1 if privdep==2
 bysort statefip year : egen privdepst=mean(privdep)
 
 *Treatment Variable
+
 gen treated=0
 replace treated=1 if statefip==4 & year==2014 
 replace treated=1 if statefip==4 & year==2015
@@ -95,53 +82,7 @@ replace treated=1 if statefip==5 & year==2015
 replace treated=1 if statefip==6 & year==2014 
 replace treated=1 if statefip==6 & year==2015
 replace treated=1 if statefip==8 & year==2014 
-replace treated=1 if statefip==8 & year==2015
-replace treated=1 if statefip==9 & year==2014 
-replace treated=1 if statefip==9 & year==2015
-replace treated=1 if statefip==10 & year==2014 
-replace treated=1 if statefip==10 & year==2015
-replace treated=1 if statefip==15 & year==2014 
-replace treated=1 if statefip==15 & year==2015
-replace treated=1 if statefip==17 & year==2015 
-replace treated=1 if statefip==19 & year==2014
-replace treated=1 if statefip==19 & year==2015 
-replace treated=1 if statefip==21 & year==2014 
 replace treated=1 if statefip==21 & year==2015
-replace treated=1 if statefip==24 & year==2014 
-replace treated=1 if statefip==24 & year==2015
-replace treated=1 if statefip==25 & year==2014 
-replace treated=1 if statefip==25 & year==2015
-replace treated=1 if statefip==26 & year==2014 
-replace treated=1 if statefip==26 & year==2015
-replace treated=1 if statefip==27 & year==2014 
-replace treated=1 if statefip==27 & year==2015
-replace treated=1 if statefip==32 & year==2014 
-replace treated=1 if statefip==32 & year==2015
-replace treated=1 if statefip==33 & year==2015
-replace treated=1 if statefip==34 & year==2014 
-replace treated=1 if statefip==34 & year==2015
-replace treated=1 if statefip==35 & year==2014 
-replace treated=1 if statefip==35 & year==2015
-replace treated=1 if statefip==36 & year==2014 
-replace treated=1 if statefip==36 & year==2015
-replace treated=1 if statefip==38 & year==2014 
-replace treated=1 if statefip==38 & year==2015
-replace treated=1 if statefip==39 & year==2014 
-replace treated=1 if statefip==39 & year==2015
-replace treated=1 if statefip==40 & year==2014 
-replace treated=1 if statefip==40 & year==2015
-replace treated=1 if statefip==41 & year==2015
-replace treated=1 if statefip==44 & year==2014 
-replace treated=1 if statefip==44 & year==2015
-replace treated=1 if statefip==50 & year==2013
-replace treated=1 if statefip==50 & year==2014 
-replace treated=1 if statefip==50 & year==2015
-replace treated=1 if statefip==53 & year==2014 
-replace treated=1 if statefip==53 & year==2015
-replace treated=1 if statefip==54 & year==2014 
-replace treated=1 if statefip==54 & year==2015
-
-
 
 //Summary of statistics  
 
@@ -158,22 +99,11 @@ ttest(offtotval), by(treated)
 
 
 //Individaul probabilty weight (IPW)
+
 replace predicttreat = .5593957 if statefip == 1
 replace predicttreat = .4231611 if statefip == 2
 replace predicttreat = .7434157 if statefip == 4
 replace predicttreat = .3440739 if statefip == 5
-replace predicttreat = .7687811 if statefip == 6
-replace predicttreat = .8226916 if statefip == 8
-replace predicttreat = .9604704 if statefip == 9
-replace predicttreat = .3189982 if statefip == 10
-replace predicttreat = .7183552 if statefip == 11
-replace predicttreat = .2354237 if statefip == 12
-replace predicttreat = .1032863 if statefip == 13
-replace predicttreat = .5871964 if statefip == 15
-replace predicttreat = .4010799 if statefip == 16
-replace predicttreat = .8445249 if statefip == 17
-replace predicttreat = .3111293 if statefip == 18
-replace predicttreat = .3347585 if statefip == 19
 replace predicttreat = .143375 if statefip == 20
 replace predicttreat = .5850996 if statefip == 21
 replace predicttreat = .1719282 if statefip == 22
@@ -183,33 +113,6 @@ replace predicttreat = .940646 if statefip == 25
 replace predicttreat = .5824368 if statefip == 26
 replace predicttreat = .6320861 if statefip == 27
 replace predicttreat = .2839487 if statefip == 28
-replace predicttreat = .538443 if statefip == 29
-replace predicttreat = .4001942 if statefip == 30
-replace predicttreat = .0781206 if statefip == 31
-replace predicttreat = .3957405 if statefip == 32
-replace predicttreat = .9629692 if statefip == 33
-replace predicttreat = .8980865 if statefip == 34
-replace predicttreat = .7550536 if statefip == 35
-replace predicttreat = .9023597 if statefip == 36
-replace predicttreat = .3886532 if statefip == 37
-replace predicttreat = .2209404 if statefip == 38
-replace predicttreat = .7856719 if statefip == 39
-replace predicttreat = .1487034 if statefip == 40
-replace predicttreat = .3957148 if statefip == 41
-replace predicttreat = .78184 if statefip == 42
-replace predicttreat = .8654668 if statefip == 44
-replace predicttreat = .3296277 if statefip == 45
-replace predicttreat = .1072237 if statefip == 46
-replace predicttreat = .5487469 if statefip == 47
-replace predicttreat = .1949343 if statefip == 48
-replace predicttreat = .4184954 if statefip == 49
-replace predicttreat = .9523525 if statefip == 50
-replace predicttreat = .3907467 if statefip == 51
-replace predicttreat = .7009445 if statefip == 53
-replace predicttreat = .5629869 if statefip == 54
-replace predicttreat = .7701923 if statefip == 55
-replace predicttreat = .3362699 if statefip == 56
-
 
 
 //Generating the aggregate Level
